@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query
 from services.products import get_products
-# from typing import List, Dict, Any
+from typing import Any
 
 app = FastAPI()
 
@@ -23,5 +23,17 @@ def list_product(
         max=50,
         description="Search by product name(case_sensitive)"
     )
-):
-    return name
+) -> dict[str, Any]:
+    
+    products = product()
+
+    if name:
+        p_name = name.strip().lower()
+        products = [p for p in products if p_name in p.get("name", "").lower()]
+
+        if not products:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No product found matching name={name}"
+            )         
+    return {"total": len(products), "items": products}
