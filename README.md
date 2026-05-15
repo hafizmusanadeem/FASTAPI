@@ -1,0 +1,1 @@
+This project is just a practice of fast api with a basic ml project.
